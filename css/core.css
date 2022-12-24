@@ -1,0 +1,385 @@
+:root {
+    --accenttext: #f3fbfd;
+    --link: rgba(0, 56, 101, 1.0);
+    --linkhover: rgba(0, 56, 101, 1.0);
+    --linktext: rgb(0, 56, 101);
+    --accent: #003865;
+    --white: #ffffff;
+    --primary: rgb(29, 29, 31);
+    --secondary: #7b7b81;
+    --tertiary: rgba(123, 123, 129, 0.25);
+    --red: #fc2125;
+    --yellow: #fec309;
+    --green: #29c732;
+    font-size: 62.5%;
+    --sans-font: 'Source Sans Pro';
+    --serif-font: 'Source Serif Pro'
+}
+
+* {
+    box-sizing: border-box;
+    font-family: var(--sans-font), Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: var(--primary);
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-family: var(--serif-font), serif;
+}
+
+p {
+    font-size: 1.7rem;
+    font-weight: 400;
+
+}
+
+a {
+    text-decoration: none;
+    font-family: inherit;
+    color: var(--linktext);
+    border-bottom: 1px solid var(--linkhover);
+}
+
+h1 a,
+h2 a,
+h3 a,
+h4 a {
+    text-decoration: none;
+    color: var(--accent);
+    border: none;
+}
+
+h1 a:hover,
+h2 a:hover,
+h3 a:hover,
+h4 a:hover {
+    cursor: pointer;
+    border-bottom: 2px solid var(--linkhover);
+}
+
+a:hover {
+    cursor: pointer;
+    color: var(--linktext);
+    border-bottom: 2px solid var(--linkhover);
+}
+
+body,
+p {
+    font-size: 1.7rem;
+    margin-top: 1.4rem;
+    line-height: 2.5rem;
+}
+
+h1 {
+    font-size: 4.0rem;
+    color: var(--accent);
+    line-height: 4.4rem;
+    font-weight: 600;
+}
+
+strong {
+    font-weight: 600;
+}
+
+.headline {
+    font-size: 2.1rem;
+    font-family: var(--serif-font), serif;
+    font-weight: 400;
+    color: var(--primary);
+    line-height: 2.9rem;
+    margin-top: 2.5rem;
+    letter-spacing: 0.23px;
+}
+
+h2 {
+    font-size: 3.2rem;
+    font-weight: 600;
+    line-height: 3.6rem;
+}
+
+h3 {
+    font-size: 2.1rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    margin-top: 3.4rem;
+}
+
+h4 {
+    font-size: 1.7rem;
+    font-weight: 600;
+    line-height: 2.5rem;
+    margin-top: 2.7rem;
+}
+
+.page-container {
+    margin: 2rem 4rem;
+
+}
+
+ul,
+ol {
+    margin-block-start: 2rem;
+    margin-inline-start: 2rem;
+
+}
+
+button,
+.button {
+    margin-top: 1.4rem;
+    padding: 1rem 2rem 1rem 2rem;
+    cursor: pointer;
+    font-size: 1.7rem;
+    background-color: white;
+    box-shadow: none;
+    border: 1px solid var(--link);
+    color: var(--accent);
+}
+
+.button-small {
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin-top: 0px;
+    border: 1px solid var(--link);
+    color: var(--accent);
+}
+
+button:hover,
+.button:hover,
+.button-small:hover {
+    background-color: var(--linkhover);
+    color: var(--accenttext);
+    border: 1px solid var(--link);
+}
+
+.content-container {
+    padding-top: 4.0rem;
+    padding-bottom: 4.0rem;
+}
+
+.container {
+    padding: 20px 10px 20px 10px;
+}
+
+.container-spacer {
+    padding: 20px 0px 20px 0px;
+}
+
+.flex-container {
+    display: flex;
+    height: 100%;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-align-center {
+    align-items: center;
+}
+
+.flex-justify-center {
+    justify-content: center;
+}
+
+.flex-justify-space-between {
+    justify-content: space-between;
+}
+
+.flex-justify-space-around {
+    justify-content: space-around;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.hidden {
+    display: none;
+}
+
+input[type='submit'] {
+    font-size: 1.6rem;
+    padding: 0.8rem 2.2rem;
+    margin: 0.4rem 0.4rem;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+
+}
+
+
+
+.okBtn {
+    background-color: var(--accent);
+    color: white;
+}
+
+.okBtn:hover {
+    cursor: pointer;
+}
+
+.cancelBtn:hover {
+    cursor: pointer;
+    background-color: var(--tertiary);
+}
+
+#nav {
+    height: 12px 0px;
+    background-color: var(--accent);
+    margin-bottom: 2.5rem;
+}
+
+.nav-header {
+    color: white !important;
+}
+
+
+.panel {
+    border: 1px solid var(--secondary);
+    border-radius: .6rem;
+    padding: 20px 20px 20px 20px;
+    z-index: 0;
+}
+
+.form-control {
+    width: 100%;
+    margin: 0.4rem 0.4rem;
+    height: 3.5rem;
+    border-radius: .5rem;
+    font-size: 1.4rem;
+    padding: 0.5rem 1.5rem;
+    border: 1px solid var(--secondary)
+}
+
+.link {
+    position: relative;
+    width: 30rem;
+    margin: 0rem 0.8rem 0.8rem 0rem;
+}
+
+
+a[data-disabled="true"] {
+    cursor: not-allowed;
+}
+
+.accenttext {
+    color: var(--accenttext);
+}
+
+.accent {
+    color: var(--accent);
+}
+
+.white {
+    color: var(--white);
+}
+
+.primary {
+    color: var(--primary);
+}
+
+.secondary {
+    color: var(--secondary);
+}
+
+.tertiary {
+    color: var(--tertiary);
+}
+
+.red {
+    color: var(--red);
+}
+
+.yellow {
+    color: var(--yellow);
+}
+
+.green {
+    color: var(--green);
+}
+
+.accenttext-bg {
+    background-color: var(--accenttext);
+}
+
+.accent-bg {
+    background-color: var(--accent);
+}
+
+.white-bg {
+    background-color: var(--white);
+}
+
+.primary-bg {
+    background-color: var(--primary);
+}
+
+.secondary-bg {
+    background-color: var(--secondary);
+}
+
+.tertiary-bg {
+    background-color: var(--tertiary);
+}
+
+.red-bg {
+    background-color: var(--red);
+}
+
+.yellow-bg {
+    background-color: var(--yellow);
+}
+
+.green-bg {
+    background-color: var(--green);
+}
+
+.accordion-container {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.accordion-banner {
+    cursor: pointer;
+}
+
+.accordion-content {
+    display: none;
+}
+
+.accordion-open {
+    display: block;
+}
+
+.h-tab-container {}
+
+.h-tab-banner {
+    width: 15rem;
+    display: inline-block;
+    padding: 1.4rem;
+}
+
+.h-tab-content {
+    display: none;
+}
+
+.tab-open {
+    display: block;
+}
+
+.ag-body-viewport-wrapper.ag-layout-normal {
+    overflow-x: scroll;
+    overflow-y: scroll;
+}

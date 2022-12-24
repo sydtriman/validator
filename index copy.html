@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400&family=Roboto:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/core.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="page-container">
+        <nav id="nav" class="container">
+            <div class="flex-container flex-align-center flex-justify-space-between">
+
+                <h2 class="nav-header">Link Saver</h3>
+                    <a id="addBtn">
+                        +
+                    </a>
+
+            </div>
+        </nav>
+
+        <h1><a href="#">Heading 1</a> </h1>
+        <div class="headline">Headline goes here Headline goes hereHeadline goes hereHeadline goes hereHeadline
+            goes
+            hereHeadline goes hereHeadline goes here</div>
+        <div class="content-container">
+            <h2>Heading 2</h2>
+            <h3><a href="#">Heading 3</a></h3>
+            <p>Paragraph text Paragraph textParagraph textParagraph textParagraph text Paragraph textParagraph
+                text
+                Paragraph text Paragraph text Paragraph text Paragraph
+                textParagraph textParagraph textParagraph
+                text
+                Paragraph textParagraph text
+                Paragraph text Paragraph text Paragraph text Paragraph textParagraph textParagraph textParagraph
+                text
+                Paragraph textParagraph text
+                Paragraph text Paragraph text</p>
+            <p>Here is a <a href="#">link to somewhere special</a></p>
+            <button>Click me</button>
+            <p><a class="button" href="#">Click me button</a></p>
+            <ul>
+                <li>Item 1</li>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+                <li>Item 4</li>
+                <li>Item 5</li>
+            </ul>
+            <ol>
+                <li>Item 1</li>
+                <li>Item 2</li>
+                <li>Item 3</li>
+                <li>Item 4</li>
+                <li>Item 5</li>
+            </ol>
+        </div>
+
+        <h1>Heading 1</h1>
+        <p>Paragraph textParagraph text
+            Paragraph text Paragraph <a href="#">text</a> Paragraph text Paragraph textParagraph textParagraph
+            textParagraph
+            text</p>
+        <div class="container">
+            <div class="addLinkContainer flex-container flex-align-center flex-justify-center hidden"
+                id="addLinkContainer">
+
+                <div class="panel" id="addLinkPanel">
+                    <h3>New Link</h3>
+                    <form id="addLinkForm">
+                        <input type="text" name="title" id="linkTitle" placeholder="Title" class="form-control">
+                        <input type="text" name="url" id="linkURL" placeholder="URL" class="form-control">
+                        <input type="text" name="category" id="linkCategory" placeholder="Category (comma separated)"
+                            class="form-control">
+                        <div id="addedCategories">
+
+                        </div>
+
+                        <input type="submit" class="okBtn" value="Submit" id="submitBtn">
+                        <input type="submit" class="cancelBtn" value="Cancel" id="cancelBtn">
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="accordion-container">
+            <div class="accordion-banner accent-bg">
+                <h1 class="white">Corporate Tax</h1>
+            </div>
+            <div class="accordion-content accordion-open">
+                Text goes here 2
+            </div>
+        </div>
+
+        <div class="accordion-container">
+            <div class="accordion-banner accent-bg ">
+                <h1 class="white">Personal Tax</h1>
+            </div>
+            <div class="accordion-content">
+                Text goes here 2
+            </div>
+        </div>
+
+
+        <div class="h-tab-container">
+
+            <div class="h-tab-banner accent-bg white " id="tab-1">Item 1</div>
+            <div class="h-tab-banner " id="tab-2">Item 2</div>
+            <div class="h-tab-content tab-open" id="tab-1">Here is the content</div>
+
+            <div class="h-tab-content" id="tab-2">Here is the 2nd content</div>
+
+        </div>
+
+    </div>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
