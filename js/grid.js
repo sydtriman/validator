@@ -5,6 +5,7 @@ class ActionCellRenderer {
         actionButtons += `<a href="#" onclick="deleteRow(${params.data.id})" id="delete_${params.data.id}" class="button-small">Delete</a>`;
         actionButtons += `&nbsp;<a href="#" onclick="editRow(${params.data.id})" id="edit_${params.data.id}" class="button-small">Edit</a>`;
         actionButtons += `&nbsp;<a href="#" onclick="saveRow(${params.data.id})" id="save_${params.data.id}" class="button-small hidden">Save</a>`;
+        actionButtons += `&nbsp;<a href="#" onclick="runRow(${params.data.id})" id="run_${params.data.id}" class="button-small">Run</a>`;
         this.eGui.innerHTML = actionButtons;
     }
 
@@ -25,6 +26,11 @@ function deleteRow(id) {
         return dataItem.id != id;
     });
     gridOptions.api.setRowData(immutableStore);
+
+    const addBtn = document.getElementById('addBtn');
+    if (addBtn.getAttribute('data-disabled') == 'true') {
+        addBtn.setAttribute('data-disabled', 'false');
+    }
 }
 
 function saveRow(id) {
@@ -33,6 +39,8 @@ function saveRow(id) {
 
     const editBtn = document.getElementById('edit_' + id);
     editBtn.classList.remove('hidden');
+    const runBtn = document.getElementById('run_' + id);
+    runBtn.classList.remove('hidden');
     const saveBtn = document.getElementById('save_' + id);
     saveBtn.classList.add('hidden');
     const addBtn = document.getElementById('addBtn');
@@ -41,10 +49,20 @@ function saveRow(id) {
 
     gridOptions.api.stopEditing();
 
-    immutableStore[selectedRowIndex].state = "read";
-    gridOptions.api.setRowData(immutableStore);
-    selectedRowNode = gridOptions.api.getRowNode(id);
+    selectedRowNode.setDataValue('state', "read");
     selectedRowNode.setSelected(false);
+
+}
+
+function runRow(id) {
+    let selectedRowNode = gridOptions.api.getRowNode(id);
+    let selectedRowIndex = selectedRowNode.rowIndex;
+
+    const output = document.getElementById('output');
+    output.innerHTML = "";
+    for (let key of Object.keys(immutableStore[selectedRowIndex])) {
+        output.innerHTML += key + ": " + immutableStore[selectedRowIndex][key] + "<br>";
+    }
 
 }
 
@@ -67,9 +85,7 @@ function editRow(id) {
     let selectedRowNode = gridOptions.api.getRowNode(id);
     let selectedRowIndex = selectedRowNode.rowIndex;
 
-    immutableStore[selectedRowIndex].state = "edit";
-    gridOptions.api.setRowData(immutableStore);
-
+    selectedRowNode.setDataValue('state', "edit");
 
     gridOptions.api.startEditingCell({
         rowIndex: selectedRowIndex,
@@ -82,30 +98,38 @@ function editRow(id) {
     editBtn.classList.add('hidden');
     const saveBtn = document.getElementById('save_' + id);
     saveBtn.classList.remove('hidden');
+    const runBtn = document.getElementById('run_' + id);
+    runBtn.classList.add('hidden');
 
 
 }
 
 const columnDefs = [
-
-
+    {
+        field: "state",
+        editable: true,
+        hide: true
+    },
     {
         field: "action",
         cellRenderer: ActionCellRenderer,
         editable: false,
         filter: false,
+        width: 170,
         resizable: false,
         sortable: false,
     },
     {
         field: "name", editable: true,
         headerName: "Column Name",
+        resizable: true,
         flex: 2,
         editable: (params) => params.data.state == "edit"
     },
     {
         field: "description",
         headerName: "Field Description",
+        resizable: true,
         flex: 2,
         editable: (params) => params.data.state == "edit"
     },
@@ -119,6 +143,7 @@ const columnDefs = [
     {
         field: "special_characters",
         headerName: "Special Characters Allowed?",
+        width: 150,
         resizable: false,
         cellEditor: 'agSelectCellEditor',
         cellEditorParams: { values: ['Yes', 'No'] },
@@ -127,6 +152,7 @@ const columnDefs = [
     {
         field: "min_length",
         headerName: "Minimum text length",
+        width: 150,
         resizable: false,
         filter: 'agNumberColumnFilter',
         editable: (params) => params.data.type == "Text" & params.data.state == "edit",
@@ -134,6 +160,7 @@ const columnDefs = [
     {
         field: "max_length",
         headerName: "Maximum text length",
+        width: 150,
         resizable: false,
         filter: 'agNumberColumnFilter',
         editable: (params) => params.data.type == "Text" & params.data.state == "edit",
@@ -141,6 +168,8 @@ const columnDefs = [
     },
     {
         field: "decimals",
+        headerName: "Number of Decimals",
+        width: 150,
         filter: 'agNumberColumnFilter',
         resizable: false,
         editable: (params) => params.data.type == "Number" & params.data.state == "edit",
@@ -149,13 +178,17 @@ const columnDefs = [
     },
     {
         field: "min_value",
+        headerName: "Minimum value",
         filter: 'agNumberColumnFilter',
+        width: 150,
         resizable: false,
         editable: (params) => params.data.type == "Number" & params.data.state == "edit",
         valueParser: numberParser,
     },
     {
         field: "max_value",
+        headerName: "Maximum value",
+        width: 150,
         filter: 'agNumberColumnFilter',
         resizable: false,
         editable: (params) => params.data.type == "Number" & params.data.state == "edit"
@@ -191,15 +224,17 @@ const gridOptions = {
         immutableStore = rowData;
         params.api.setRowData(immutableStore);
         gridOptions.api.sizeColumnsToFit();
+
     },
     defaultColDef: {
         editable: true,
-        resizable: true,
+        resizable: false,
         filter: true,
         sortable: true,
         wrapHeaderText: true,
         autoHeaderHeight: true,
-        flex: 1
+        flex: 1,
+
     }
 };
 
@@ -209,15 +244,12 @@ document.addEventListener('DOMContentLoaded', () => {
     new agGrid.Grid(gridDiv, gridOptions);
 });
 
-
-
 document.addEventListener('click', function (event) {
     // filter out clicks on any other elements
     if (event.target.nodeName == 'A' && event.target.getAttribute('data-disabled') == 'true') {
         event.preventDefault();
     }
 });
-
 
 
 function onCellEditingStopped(event) {
