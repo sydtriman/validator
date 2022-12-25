@@ -1,149 +1,55 @@
-const linkCategory = document.getElementById("linkCategory");
-const submitBtn = document.getElementById('submitBtn');
-const cancelBtn = document.getElementById('cancelBtn');
-const addBtn = document.getElementById('addBtn');
-const addLinkPanel = document.getElementById('addLinkPanel');
-const linkList = document.getElementById('linkList');
-const addedCategories = document.getElementById('addedCategories');
-const addLinkContainer = document.getElementById('addLinkContainer');
+// XLSX is a global from the standalone script
 
-let editIndex = -1;
-let linkCategories = [];
+async function handleDropAsync(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  const f = e.dataTransfer.files[0];
+  /* f is a File */
+  const data = await f.arrayBuffer();
+  /* data is an ArrayBuffer */
+  const workbook = XLSX.read(data);
+  populateGrid(workbook);
 
-let links = [
-    {
-        title: "new link",
-        url: "www.cnn.com",
-        categories: ['node', 'js']
-    },
-    {
-        title: "new link2",
-        url: "www.cnn2.com",
-        categories: ['node2', 'js2']
-    }
-];
-
-document.addEventListener('DOMContentLoaded', () => {
-    displayLinks();
-    console.log("loaded dom");
-})
-
-
-function displayLinks() {
-    linkList.innerHTML = '';
-    let index = 0;
-    const d = new Date();
-    for (let link of links) {
-        let linkHTMLString = `
-            <div class="panel link" >
-                <div class="link-options">
-                    <button class="button-small" onclick="deleteLink(${index})">Delete</button>
-                    <button class="button-small" onclick="editLink(${index})">Edit</button>
-                </div>
-                <h3 class="link-header">
-                    <a href="${link.url}">${link.title} </a >
-                </h3 >
-                <p class="link-date">${d}</p>
-                <div class="categories">Categories:`
-
-        for (let category of link.categories) {
-            linkHTMLString += `
-                    <span class="category">${category}</span>`
-        };
-        linkHTMLString += "</div></div>";
-        linkList.innerHTML += linkHTMLString;
-        index++;
-    }
-
+  /* DO SOMETHING WITH workbook HERE */
 }
+drop_dom_element.addEventListener("drop", handleDropAsync, false);
 
-addBtn.addEventListener('click', (event) => {
-    showFormPanel();
-})
+function populateGrid(workbook) {
+  // our data is in the first sheet
+  var firstSheetName = workbook.SheetNames[0];
+  var worksheet = workbook.Sheets[firstSheetName];
 
-cancelBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    linkTitle.value = '';
-    linkURL.value = '';
-    linkCategory.value = '';
-    addedCategories.innerHTML = '';
-    linkCategories = [];
-    hideFormPanel();
-})
+  // we expect the following columns to be present
+  var columns = {
+    A: 'athlete',
+    B: 'age',
+    C: 'country',
+    D: 'year',
+    E: 'date',
+    F: 'sport',
+    G: 'gold',
+    H: 'silver',
+    I: 'bronze',
+    J: 'total',
+  };
 
-linkCategory.addEventListener('keydown', function (event) {
+  var rowData = [];
 
-    if (event.code === "Comma") {
-        event.preventDefault();
-        linkCategories.push(linkCategory.value)
-        linkCategory.value = '';
+  // start at the 2nd row - the first row are the headers
+  var rowIndex = 2;
 
-        displayLinkCategories();
-    }
-})
+  // iterate over the worksheet pulling out the columns we're expecting
+  while (worksheet['A' + rowIndex]) {
+    var row = {};
+    Object.keys(columns).forEach(function (column) {
+      row[columns[column]] = worksheet[column + rowIndex].w;
+    });
 
-function showFormPanel() {
-    displayLinkCategories();
-    addLinkContainer.classList.remove('hidden');
-}
-function hideFormPanel() {
-    addLinkContainer.classList.add('hidden')
-}
-function displayLinkCategories() {
+    rowData.push(row);
 
-    addedCategories.innerText = "";
-    for (let category of linkCategories) {
-        let categoryHTMLString = `
-        <span class="category">${category}</span>
-        `;
-        addedCategories.innerHTML += categoryHTMLString
+    rowIndex++;
+  }
 
-    }
-}
-
-submitBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    const title = linkTitle.value;
-    const url = linkURL.value;
-    const categories = linkCategories;
-
-    const newLink = {
-        title,
-        url,
-        categories
-    }
-
-    if (editIndex === -1) {
-        links.push(newLink);
-    } else {
-        links[editIndex] = newLink;
-    }
-
-
-
-    linkTitle.value = '';
-    linkURL.value = '';
-    linkCategory.value = '';
-    addedCategories.innerHTML = '';
-    linkCategories = [];
-
-    displayLinks();
-    hideFormPanel();
-
-})
-
-function deleteLink(index) {
-    console.log("index", index);
-    links.splice(index, 1);
-    displayLinks();
-}
-
-function editLink(index) {
-    console.log("index", index);
-    editIndex = index;
-    linkTitle.value = links[index].title;
-    linkURL.value = links[index].url;
-    linkCategories = links[index].categories;
-
-    showFormPanel();
+  // finally, set the imported rowData into the grid
+  gridOptions.api.setRowData(rowData);
 }
