@@ -1,42 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/5bb89cd9fe.js" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/5bb89cd9fe.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-        href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400&family=Roboto:wght@300;400;500&display=swap"
-        rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/core.css">
+      href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400&family=Roboto:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/core.css" />
     <title>Ag-Grid Basic Example</title>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+    	<script src="https://cdn.jsdelivr.net/npm/xlsx-style@0.8.13/dist/xlsx.full.min.js">
     <script src="js/grid.js"></script>
     <title>Validator</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="page-container">
+      <div class="container accent-bg">
+        <h1 class="white">Validator</h1>
+      </div>
 
-        <div class="container accent-bg">
-            <h1 class="white">Validator</h1>
-        </div>
-
-
-        <div class="content-container">
-            <a href="#" class="button-small" id="addBtn" data-disabled="false" onclick="addRow()">Add</a>
-            <div id="myGrid" style="height: 400px; width:100%;" class="ag-theme-alpine container-spacer"></div>
-            <div id="output"></div>
-        </div>
+      <div class="content-container">
+        <a
+          href="#"
+          class="button-small"
+          id="addBtn"
+          data-disabled="false"
+          onclick="addRow()"
+          >Add</a
+        >
+        <div
+          id="myGrid"
+          style="height: 400px; width: 100%"
+          class="ag-theme-alpine container-spacer"
+        ></div>
+        <div id="output"></div>
+      </div>
     </div>
 
-
     <script src="js/app.js"></script>
-</body>
-
+  </body>
 </html>
