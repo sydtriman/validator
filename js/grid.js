@@ -202,7 +202,6 @@ var rowData = [
     { id: "2", state: "read", name: "account_description2", description: "Account II Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
 ];
 
-// let the grid know which columns and what data to use
 const gridOptions = {
     columnDefs: columnDefs,
     rowData: immutableStore,
@@ -234,11 +233,11 @@ const gridOptions = {
         wrapHeaderText: true,
         autoHeaderHeight: true,
         flex: 1,
+        //cellStyle: { border: '1px solid' }
 
     }
 };
 
-// setup the grid after the page has finished loading
 document.addEventListener('DOMContentLoaded', () => {
     const gridDiv = document.querySelector('#myGrid');
     new agGrid.Grid(gridDiv, gridOptions);
