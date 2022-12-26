@@ -1,127 +1,46 @@
 let immutableStore = [];
-class ActionCellRenderer {
-    init(params) {
-        this.eGui = document.createElement('span');
-        let actionButtons = ""
-        actionButtons += `<a href="#" onclick="deleteRow(${params.data.id})" id="delete_${params.data.id}" class="button-small">Delete</a>`;
-        actionButtons += `&nbsp;<a href="#" onclick="editRow(${params.data.id})" id="edit_${params.data.id}" class="button-small">Edit</a>`;
-        actionButtons += `&nbsp;<a href="#" onclick="saveRow(${params.data.id})" id="save_${params.data.id}" class="button-small hidden">Save</a>`;
-        actionButtons += `&nbsp;<a href="#" onclick="runRow(${params.data.id})" id="run_${params.data.id}" class="button-small">Run</a>`;
-        this.eGui.innerHTML = actionButtons;
-    }
 
-    getGui() {
-        return this.eGui;
-    }
-
-    refresh(params) {
-        return false;
-    }
-}
 
 const columnDefs = [
     {
         field: "state",
         editable: true,
-        hide: true
+        //hide: true
     },
     {
-        field: "action",
-        cellRenderer: ActionCellRenderer,
-        editable: false,
-        filter: false,
-        minWidth: 150,
-        resizable: false,
-        sortable: false,
+        field: "fieldName",
+        checkboxSelection: true,
+        editable: true,
+        headerName: "Field",
+        resizable: true
     },
     {
-        field: "name", editable: true,
-        headerName: "Column Name",
+        field: "value",
+        editable: true,
+        headerName: "Value",
         resizable: true,
-        flex: 2,
-        editable: (params) => params.data.state == "edit"
-    },
-    {
-        field: "description",
-        headerName: "Field Description",
-        resizable: true,
-        flex: 2,
-        editable: (params) => params.data.state == "edit"
-    },
-    {
-        field: "type",
-        headerName: "Data Type",
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: ['Text', 'Number', 'Boolean'] },
-        editable: (params) => params.data.state == "edit"
-    },
-    {
-        field: "special_characters",
-        headerName: "Special Characters Allowed?",
-        width: 150,
-        resizable: false,
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: ['Yes', 'No'] },
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit"
-    },
-    {
-        field: "min_length",
-        headerName: "Minimum text length",
-        width: 150,
-        resizable: false,
-        filter: 'agNumberColumnFilter',
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
-    },
-    {
-        field: "max_length",
-        headerName: "Maximum text length",
-        width: 150,
-        resizable: false,
-        filter: 'agNumberColumnFilter',
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
-        valueParser: numberParser,
-    },
-    {
-        field: "decimals",
-        headerName: "Number of Decimals",
-        width: 150,
-        filter: 'agNumberColumnFilter',
-        resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
-        valueParser: numberParser,
-
-    },
-    {
-        field: "min_value",
-        headerName: "Minimum value",
-        filter: 'agNumberColumnFilter',
-        width: 150,
-        resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
-        valueParser: numberParser,
-    },
-    {
-        field: "max_value",
-        headerName: "Maximum value",
-        width: 150,
-        filter: 'agNumberColumnFilter',
-        resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit"
-
     }
 ];
 
 let rowData = [
-    { id: "1", state: "read", name: "account_description", description: "Account Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
-    { id: "2", state: "read", name: "account_description2", description: "Account II Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
+    { id: "1", state: "read", fieldName: "account_code", fieldDescription: "Account Code", value: "98723489723" },
+    { id: "2", state: "read", fieldName: "account_name", fieldDescription: "Account Name", value: "Legal" },
+    { id: "3", state: "read", fieldName: "account_description", fieldDescription: "Account Description", value: "Legal and costs costs" },
+    { id: "4", state: "read", fieldName: "account_type", fieldDescription: "Account Type", value: "Text" },
+    { id: "5", state: "read", fieldName: "min_length", fieldDescription: "Minimum Length", value: "1" },
+    { id: "6", state: "read", fieldName: "max_length", fieldDescription: "Maximum Length", value: "100" },
+    { id: "7", state: "read", fieldName: "decimals", fieldDescription: "Decimal Places", value: "" },
+    { id: "8", state: "read", fieldName: "min_number", fieldDescription: "Minimum Value", value: "0" },
+    { id: "9", state: "read", fieldName: "max_number", fieldDescription: "Maximum Value", value: "0" },
 ];
 
 const gridOptions = {
     columnDefs: columnDefs,
     rowData: immutableStore,
-    rowSelection: 'single',
+    rowSelection: 'multiple',
     editType: 'fullRow',
     suppressMovableColumns: true,
+    animateRows: true,
 
     //isRowSelectable: rowNode => rowNode.data ? rowNode.data.state == "edit" : false,
     getRowId: (params) => params.data.id,
@@ -140,14 +59,12 @@ const gridOptions = {
 
     },
     defaultColDef: {
-        editable: true,
         resizable: false,
         filter: true,
         sortable: true,
         wrapHeaderText: true,
         autoHeaderHeight: true,
-        flex: 1,
-
+        editable: (params) => params.data.state == "edit"
     }
 };
 
@@ -165,35 +82,23 @@ function deleteRow(id) {
 }
 
 function saveRow(id) {
-    let selectedRowNode = gridOptions.api.getRowNode(id);
-    let selectedRowIndex = selectedRowNode.rowIndex;
+    gridOptions.api.stopEditing();
+    gridOptions.api.forEachNode(function (rowNode, index) {
+        rowNode.setDataValue('state', 'read');
+    });
 
-    const editBtn = document.getElementById('edit_' + id);
+    const editBtn = document.getElementById('editBtn');
     editBtn.classList.remove('hidden');
-    const runBtn = document.getElementById('run_' + id);
+    const runBtn = document.getElementById('runBtn');
     runBtn.classList.remove('hidden');
-    const saveBtn = document.getElementById('save_' + id);
+    const saveBtn = document.getElementById('saveBtn');
     saveBtn.classList.add('hidden');
     const addBtn = document.getElementById('addBtn');
     addBtn.setAttribute('data-disabled', 'false');
-
-
-    gridOptions.api.stopEditing();
-
-    selectedRowNode.setDataValue('state', "read");
-    selectedRowNode.setSelected(false);
-
 }
 
 function runRow(id) {
-    let selectedRowNode = gridOptions.api.getRowNode(id);
-    let selectedRowIndex = selectedRowNode.rowIndex;
-
-    const output = document.getElementById('output');
-    output.innerHTML = "";
-    for (let key of Object.keys(immutableStore[selectedRowIndex])) {
-        output.innerHTML += key + ": " + immutableStore[selectedRowIndex][key] + "<br>";
-    }
+    console.log('addRow run');
 
 }
 
@@ -201,7 +106,7 @@ function addRow() {
     const newStore = immutableStore.slice();
     const lastID = immutableStore.length;
     const nextID = (lastID + 1).toString();
-    const newRowData = { id: nextID, state: "edit", action: "", name: "new" };
+    const newRowData = { id: nextID, state: "edit", action: "", fieldName: "...", value: "..." };
 
     newStore.splice(0, 0, newRowData);
     immutableStore = newStore;
@@ -212,27 +117,53 @@ function addRow() {
 
 }
 
-function editRow(id) {
-    let selectedRowNode = gridOptions.api.getRowNode(id);
-    let selectedRowIndex = selectedRowNode.rowIndex;
-
-    selectedRowNode.setDataValue('state', "edit");
+function editRow() {
+    gridOptions.api.forEachNode(function (rowNode, index) {
+        rowNode.setDataValue('state', 'edit');
+    });
 
     gridOptions.api.startEditingCell({
-        rowIndex: selectedRowIndex,
-        colKey: 'name',
+        rowIndex: 0,
+        colKey: 'fieldName',
     });
 
     const addBtn = document.getElementById('addBtn');
     addBtn.setAttribute('data-disabled', 'true');
-    const editBtn = document.getElementById('edit_' + id);
+    const editBtn = document.getElementById('editBtn');
     editBtn.classList.add('hidden');
-    const saveBtn = document.getElementById('save_' + id);
+    const saveBtn = document.getElementById('saveBtn');
     saveBtn.classList.remove('hidden');
-    const runBtn = document.getElementById('run_' + id);
+    const runBtn = document.getElementById('runBtn');
     runBtn.classList.add('hidden');
 
 
+}
+function cellEditorSelector(params) {
+    if (params.data.type === 'age') {
+        return {
+            component: NumericCellEditor,
+        };
+    }
+
+    if (params.data.type === 'gender') {
+        return {
+            component: 'agRichSelectCellEditor',
+            params: {
+                values: ['Male', 'Female'],
+            },
+            popup: true,
+        };
+    }
+
+    if (params.data.type === 'mood') {
+        return {
+            component: MoodEditor,
+            popup: true,
+            popupPosition: 'under',
+        };
+    }
+
+    return undefined;
 }
 
 function onCellEditingStopped(event) {

@@ -1,4 +1,5 @@
 let immutableStore = [];
+const output = document.getElementById('output');
 class ActionCellRenderer {
     init(params) {
         this.eGui = document.createElement('span');
@@ -6,7 +7,7 @@ class ActionCellRenderer {
         actionButtons += `<a href="#" onclick="deleteRow(${params.data.id})" id="delete_${params.data.id}" class="button-small">Delete</a>`;
         actionButtons += `&nbsp;<a href="#" onclick="editRow(${params.data.id})" id="edit_${params.data.id}" class="button-small">Edit</a>`;
         actionButtons += `&nbsp;<a href="#" onclick="saveRow(${params.data.id})" id="save_${params.data.id}" class="button-small hidden">Save</a>`;
-        actionButtons += `&nbsp;<a href="#" onclick="runRow(${params.data.id})" id="run_${params.data.id}" class="button-small">Run</a>`;
+
         this.eGui.innerHTML = actionButtons;
     }
 
@@ -122,6 +123,7 @@ const gridOptions = {
     rowSelection: 'single',
     editType: 'fullRow',
     suppressMovableColumns: true,
+    animateRows: true,
 
     //isRowSelectable: rowNode => rowNode.data ? rowNode.data.state == "edit" : false,
     getRowId: (params) => params.data.id,
@@ -170,7 +172,7 @@ function saveRow(id) {
 
     const editBtn = document.getElementById('edit_' + id);
     editBtn.classList.remove('hidden');
-    const runBtn = document.getElementById('run_' + id);
+    const runBtn = document.getElementById('runBtn');
     runBtn.classList.remove('hidden');
     const saveBtn = document.getElementById('save_' + id);
     saveBtn.classList.add('hidden');
@@ -185,16 +187,17 @@ function saveRow(id) {
 
 }
 
-function runRow(id) {
-    let selectedRowNode = gridOptions.api.getRowNode(id);
-    let selectedRowIndex = selectedRowNode.rowIndex;
-
-    const output = document.getElementById('output');
+function runRow() {
     output.innerHTML = "";
-    for (let key of Object.keys(immutableStore[selectedRowIndex])) {
-        output.innerHTML += key + ": " + immutableStore[selectedRowIndex][key] + "<br>";
-    }
+    html = "";
+    gridOptions.api.forEachNode(function (rowNode, index) {
+        for (cell of rowNode) {
+            html += Object.keys(rowNode.data)[index] + ": " + Object.values(rowNode.data)[index] + "<br>";
+            console.log('html', html);
+        }
 
+    });
+    output.innerHTML = html;
 }
 
 function addRow() {
@@ -229,7 +232,7 @@ function editRow(id) {
     editBtn.classList.add('hidden');
     const saveBtn = document.getElementById('save_' + id);
     saveBtn.classList.remove('hidden');
-    const runBtn = document.getElementById('run_' + id);
+    const runBtn = document.getElementById('runBtn');
     runBtn.classList.add('hidden');
 
 

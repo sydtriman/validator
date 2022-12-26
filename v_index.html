@@ -28,7 +28,11 @@
     </div>
 
     <div class="content-container">
-      <a href="#" class="button-small" id="addBtn" data-disabled="false" onclick="addRow()">Add</a>
+      <a href="#" class="button-small" id="addBtn" data-disabled="false" onclick="addRow()">Add</a>&nbsp;
+      <a href="#" onclick="deleteRow()" id="deleteBtn" class="button-small">Delete</a>&nbsp;
+      <a href="#" onclick="editRow()" id="editBtn" class="button-small">Edit</a>&nbsp;
+      <a href="#" onclick="saveRow()" id="saveBtn" class="button-small hidden">Save</a>&nbsp;
+      <a href="#" onclick="runRow()" id="runBtn" class="button-small hidden">Run</a>&nbsp;
       <div id="myGrid" style="height: 400px; width: 100%" class="ag-theme-alpine container-spacer"></div>
       <div id="output"></div>
     </div>
