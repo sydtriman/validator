@@ -383,3 +383,12 @@ a[data-disabled="true"] {
     overflow-x: scroll;
     overflow-y: scroll;
 }
+
+.drop_dom_element {
+    height: 100px;
+}
+
+.drop-dom-element-hover {
+    background-color: pink;
+    border: red 1px dashed
+}

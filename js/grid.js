@@ -1,3 +1,137 @@
+let immutableStore = [];
+
+const columnDefs = [
+    {
+        field: "state",
+        editable: true,
+        hide: true
+    },
+    {
+        field: "action",
+        cellRenderer: ActionCellRenderer,
+        editable: false,
+        filter: false,
+        minWidth: 150,
+        resizable: false,
+        sortable: false,
+    },
+    {
+        field: "name", editable: true,
+        headerName: "Column Name",
+        resizable: true,
+        flex: 2,
+        editable: (params) => params.data.state == "edit"
+    },
+    {
+        field: "description",
+        headerName: "Field Description",
+        resizable: true,
+        flex: 2,
+        editable: (params) => params.data.state == "edit"
+    },
+    {
+        field: "type",
+        headerName: "Data Type",
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: { values: ['Text', 'Number', 'Boolean'] },
+        editable: (params) => params.data.state == "edit"
+    },
+    {
+        field: "special_characters",
+        headerName: "Special Characters Allowed?",
+        width: 150,
+        resizable: false,
+        cellEditor: 'agSelectCellEditor',
+        cellEditorParams: { values: ['Yes', 'No'] },
+        editable: (params) => params.data.type == "Text" & params.data.state == "edit"
+    },
+    {
+        field: "min_length",
+        headerName: "Minimum text length",
+        width: 150,
+        resizable: false,
+        filter: 'agNumberColumnFilter',
+        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
+    },
+    {
+        field: "max_length",
+        headerName: "Maximum text length",
+        width: 150,
+        resizable: false,
+        filter: 'agNumberColumnFilter',
+        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
+        valueParser: numberParser,
+    },
+    {
+        field: "decimals",
+        headerName: "Number of Decimals",
+        width: 150,
+        filter: 'agNumberColumnFilter',
+        resizable: false,
+        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
+        valueParser: numberParser,
+
+    },
+    {
+        field: "min_value",
+        headerName: "Minimum value",
+        filter: 'agNumberColumnFilter',
+        width: 150,
+        resizable: false,
+        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
+        valueParser: numberParser,
+    },
+    {
+        field: "max_value",
+        headerName: "Maximum value",
+        width: 150,
+        filter: 'agNumberColumnFilter',
+        resizable: false,
+        editable: (params) => params.data.type == "Number" & params.data.state == "edit"
+
+    }
+];
+
+let rowData = [
+    { id: "1", state: "read", name: "account_description", description: "Account Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
+    { id: "2", state: "read", name: "account_description2", description: "Account II Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
+];
+
+const gridOptions = {
+    columnDefs: columnDefs,
+    rowData: immutableStore,
+    rowSelection: 'single',
+    editType: 'fullRow',
+    suppressMovableColumns: true,
+
+    //isRowSelectable: rowNode => rowNode.data ? rowNode.data.state == "edit" : false,
+    getRowId: (params) => params.data.id,
+    //onSelectionChanged: event => console.log("ONSELECTIONCHANGED", event),
+    //onRowSelected: event => console.log("ONROWSELECTED", event),
+    //onRowClicked: event => console.log('ONROWCLICKED', event),
+    //onCellValueChanged: event => console.log('ONCELLVALUECHANGED', event),
+    //onCellEditingStarted: event => console.log('ONCELLEDITINGSTART', event),
+    onCellEditingStopped: onCellEditingStopped,
+    onGridReady: (params) => {
+        immutableStore = [];
+        console.log("ONGRIDREADY");
+        immutableStore = rowData;
+        params.api.setRowData(immutableStore);
+        gridOptions.api.sizeColumnsToFit();
+
+    },
+    defaultColDef: {
+        editable: true,
+        resizable: false,
+        filter: true,
+        sortable: true,
+        wrapHeaderText: true,
+        autoHeaderHeight: true,
+        flex: 1,
+
+    }
+};
+
 class ActionCellRenderer {
     init(params) {
         this.eGui = document.createElement('span');
@@ -17,9 +151,6 @@ class ActionCellRenderer {
         return false;
     }
 }
-
-let immutableStore = [];
-
 
 function deleteRow(id) {
     const selectedRowNode = gridOptions.api.getRowNode(id);
@@ -105,154 +236,6 @@ function editRow(id) {
 
 }
 
-const columnDefs = [
-    {
-        field: "state",
-        editable: true,
-        hide: true
-    },
-    {
-        field: "action",
-        cellRenderer: ActionCellRenderer,
-        editable: false,
-        filter: false,
-      minWidth: 150,
-        resizable: false,
-        sortable: false,
-    },
-    {
-        field: "name", editable: true,
-        headerName: "Column Name",
-        resizable: true,
-        flex: 2,
-        editable: (params) => params.data.state == "edit"
-    },
-    {
-        field: "description",
-        headerName: "Field Description",
-        resizable: true,
-        flex: 2,
-        editable: (params) => params.data.state == "edit"
-    },
-    {
-        field: "type",
-        headerName: "Data Type",
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: ['Text', 'Number', 'Boolean'] },
-        editable: (params) => params.data.state == "edit"
-    },
-    {
-        field: "special_characters",
-        headerName: "Special Characters Allowed?",
-        width: 150,
-        resizable: false,
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: ['Yes', 'No'] },
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit"
-    },
-    {
-        field: "min_length",
-        headerName: "Minimum text length",
-        width: 150,
-        resizable: false,
-        filter: 'agNumberColumnFilter',
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
-    },
-    {
-        field: "max_length",
-        headerName: "Maximum text length",
-        width: 150,
-        resizable: false,
-        filter: 'agNumberColumnFilter',
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
-        valueParser: numberParser,
-    },
-    {
-        field: "decimals",
-        headerName: "Number of Decimals",
-        width: 150,
-        filter: 'agNumberColumnFilter',
-        resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
-        valueParser: numberParser,
-
-    },
-    {
-        field: "min_value",
-        headerName: "Minimum value",
-        filter: 'agNumberColumnFilter',
-        width: 150,
-        resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
-        valueParser: numberParser,
-    },
-    {
-        field: "max_value",
-        headerName: "Maximum value",
-        width: 150,
-        filter: 'agNumberColumnFilter',
-        resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit"
-
-    }
-];
-
-// specify the data
-var rowData = [
-    { id: "1", state: "read", name: "account_description", description: "Account Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
-    { id: "2", state: "read", name: "account_description2", description: "Account II Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
-];
-
-// let the grid know which columns and what data to use
-const gridOptions = {
-    columnDefs: columnDefs,
-    rowData: immutableStore,
-    rowSelection: 'single',
-    editType: 'fullRow',
-    suppressMovableColumns: true,
-
-    //isRowSelectable: rowNode => rowNode.data ? rowNode.data.state == "edit" : false,
-    getRowId: (params) => params.data.id,
-    //onSelectionChanged: event => console.log("ONSELECTIONCHANGED", event),
-    //onRowSelected: event => console.log("ONROWSELECTED", event),
-    //onRowClicked: event => console.log('ONROWCLICKED', event),
-    //onCellValueChanged: event => console.log('ONCELLVALUECHANGED', event),
-    //onCellEditingStarted: event => console.log('ONCELLEDITINGSTART', event),
-    onCellEditingStopped: onCellEditingStopped,
-    onGridReady: (params) => {
-        immutableStore = [];
-        console.log("ONGRIDREADY");
-        immutableStore = rowData;
-        params.api.setRowData(immutableStore);
-        gridOptions.api.sizeColumnsToFit();
-
-    },
-    defaultColDef: {
-        editable: true,
-        resizable: false,
-        filter: true,
-        sortable: true,
-        wrapHeaderText: true,
-        autoHeaderHeight: true,
-        flex: 1,
-
-    }
-};
-
-// setup the grid after the page has finished loading
-document.addEventListener('DOMContentLoaded', () => {
-    const gridDiv = document.querySelector('#myGrid');
-    new agGrid.Grid(gridDiv, gridOptions);
-});
-
-document.addEventListener('click', function (event) {
-    // filter out clicks on any other elements
-    if (event.target.nodeName == 'A' && event.target.getAttribute('data-disabled') == 'true') {
-        event.preventDefault();
-    }
-});
-
-
 function onCellEditingStopped(event) {
     //console.log('ONCELLEDITINGSTOPPED', event);
     var rowNode = event.node;
@@ -278,3 +261,15 @@ function onCellEditingStopped(event) {
 function numberParser(params) {
     return Number(params.newValue);
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const gridDiv = document.querySelector('#myGrid');
+    new agGrid.Grid(gridDiv, gridOptions);
+});
+
+document.addEventListener('click', function (event) {
+    // filter out clicks on any other elements
+    if (event.target.nodeName == 'A' && event.target.getAttribute('data-disabled') == 'true') {
+        event.preventDefault();
+    }
+});
+
