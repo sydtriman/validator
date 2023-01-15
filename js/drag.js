@@ -1,6 +1,11 @@
 const drop_dom_element = document.getElementById('drop_dom_element');
 const boxes = document.querySelectorAll('.drop_dom_element');
 const sheetlist = document.getElementById('sheetlist');
+const sourceitems = document.getElementById('sourceitems');
+const destinationitems = document.getElementById('destinationitems');
+const savedRowData = JSON.parse(localStorage.getItem('rowData')) || [];
+const savedColDefs = JSON.parse(localStorage.getItem('colDefs')) || [];
+
 let columnDefs = [];
 let immutableStore = [];
 let rowData = [];
@@ -38,8 +43,7 @@ const gridOptions = {
   }
 };
 
-
-async function drop(e) {
+async function fileDrop(e) {
   e.stopPropagation();
   e.preventDefault();
   let drop_dom_element = e.target;
@@ -55,22 +59,21 @@ async function drop(e) {
 
   /* DO SOMETHING WITH workbook HERE */
 }
-function dragOver(e) {
+function fileDragOver(e) {
   e.preventDefault();
   let drop_dom_element = e.target;
   drop_dom_element.classList.add('drop-dom-element-hover');
 }
-function dragEnter(e) {
+function fileDragEnter(e) {
   e.preventDefault();
   let drop_dom_element = e.target;
   drop_dom_element.classList.add('drop-dom-element-hover');
 }
-function dragLeave(e) {
+function fileDragLeave(e) {
   e.preventDefault();
   let drop_dom_element = e.target;
   drop_dom_element.classList.remove('drop-dom-element-hover');
 }
-
 function populateSheetDropDown(workbook) {
   let html = "";
   for (sheet of workbook.SheetNames) {
@@ -88,6 +91,7 @@ function populateGrid() {
   let headers = []
   let rowIndex = 1;
   let gridCell = {};
+
 
   // iterate over the worksheet pulling out the columns we're expecting
   //while (worksheet['A' + rowIndex]) {
@@ -117,18 +121,104 @@ function populateGrid() {
   immutableStore = rowData;
   gridOptions.api.setColumnDefs(columnDefs);
   gridOptions.api.setRowData(immutableStore);
+
+  populateSource(columnDefs);
+  populateDestionation(savedColDefs)
 }
 
+function populateDestionation(savedColDefs) {
+  htmlString = "";
+  savedColDefs.forEach(function (col) {
+    htmlString += "<div class=\"flex-container\"><div class=\"destinationitem\">" + col + "</div><div class=\"targetblock\">...</div></div>"
+  });
+  destinationitems.innerHTML = htmlString;
+}
 
+function populateSource(columnDefs) {
+  htmlString = "";
+  columnDefs.forEach(function (col) {
+    htmlString += "<div draggable=\"true\" id=\"" + col.field + "\" class=\"sourceitem\">" + col.field + "</div>"
+  })
+  sourceitems.innerHTML = htmlString;
+}
 
-// setup the grid after the page has finished loading
+function colDrop(e) {
+  e.stopPropagation();
+  e.preventDefault();
+  e.target.drop_dom_element.classList.remove('drag-drop-hover');
+  let item = e.dataTransfer.getData("text");
+  e.target.appendChild(document.getElementById(item));
+}
+function colDrag(e) {
+  e.dataTransfer.setData("text", e.target.id);
+  console.log('colDrag event', e.target.id);
+}
+function colDragOver(e) {
+  e.preventDefault();
+  e.target.classList.add('drag-drop-hover');
+  console.log('colDragOver event');
+}
+function colDragEnter(e) {
+  e.preventDefault();
+  e.target.classList.add('drag-drop-hover');
+  console.log('colDragEnter');
+}
+function colDragLeave(e) {
+  e.preventDefault();
+  e.target.classList.remove('drag-drop-hover');
+}
+
+// -------------- EVENT LISTENERS --------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const gridDiv = document.querySelector('#myGrid');
   new agGrid.Grid(gridDiv, gridOptions);
 });
+
 boxes.forEach(box => {
-  box.addEventListener('dragenter', dragEnter)
-  box.addEventListener('dragover', dragOver);
-  box.addEventListener('dragleave', dragLeave);
-  box.addEventListener('drop', drop);
+  box.addEventListener('dragenter', fileDragEnter)
+  box.addEventListener('dragover', fileDragOver);
+  box.addEventListener('dragleave', fileDragLeave);
+  box.addEventListener('drop', fileDrop);
+});
+
+sourceitems.addEventListener('dragstart', function (e) {
+  if (e.target.classList.contains('sourceitem')) {
+    colDrag(e);
+  };
+});
+sourceitems.addEventListener('dragenter', function (e) {
+  if (e.target.classList.contains('sourceitem')) {
+    colDragEnter(e);
+  };
+});
+sourceitems.addEventListener('dragover', function (e) {
+  if (e.target.classList.contains('sourceitem')) {
+    colDragOver(e);
+  };
+});
+sourceitems.addEventListener('dragleave', function (e) {
+  if (e.target.classList.contains('sourceitem')) {
+    colDragLeave(e);
+  };
+});
+sourceitems.addEventListener('drop', function (e) {
+  if (e.target.classList.contains('sourceitem')) {
+    colDrop(e);
+  };
+});
+
+destinationitems.addEventListener('dragenter', function (e) {
+  if (e.target.classList.contains('destinationitem')) {
+    colDragEnter(e);
+  };
+})
+destinationitems.addEventListener('dragover', function (e) {
+  if (e.target.classList.contains('destinationitem')) {
+    colDragOver(e);
+  };
+});
+destinationitems.addEventListener('dragleave', function (e) {
+  if (e.target.classList.contains('destinationitem')) {
+    colDragLeave(e);
+  };
 });

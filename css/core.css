@@ -378,17 +378,3 @@ a[data-disabled="true"] {
 .tab-open {
     display: block;
 }
-
-.ag-body-viewport-wrapper.ag-layout-normal {
-    overflow-x: scroll;
-    overflow-y: scroll;
-}
-
-.drop_dom_element {
-    height: 100px;
-}
-
-.drop-dom-element-hover {
-    background-color: pink;
-    border: red 1px dashed
-}

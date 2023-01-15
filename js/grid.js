@@ -1,5 +1,8 @@
 let immutableStore = [];
 const output = document.getElementById('output');
+const saveBtn = document.getElementById('saveBtn');
+let colNames = [];
+
 class ActionCellRenderer {
     init(params) {
         this.eGui = document.createElement('span');
@@ -263,6 +266,22 @@ function onCellEditingStopped(event) {
 function numberParser(params) {
     return Number(params.newValue);
 }
+
+function saveSet(e) {
+
+    e.preventDefault();
+    localStorage.setItem('rowData', JSON.stringify(rowData));
+
+    rowData.forEach(function (row) {
+        colNames.push(row.name)
+    })
+
+    localStorage.setItem('colDefs', JSON.stringify(colNames))
+    window.location.assign('/');
+
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
     const gridDiv = document.querySelector('#myGrid');
     new agGrid.Grid(gridDiv, gridOptions);

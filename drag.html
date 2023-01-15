@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="css/core.css" />
+    <link rel="stylesheet" href="css/app.css" />
     <title>Ag-Grid Basic Example</title>
     <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
     <!-- use the latest version -->
@@ -36,11 +37,24 @@
 
                 </select>
             </form>
-            <a href="#" onclick="populateGrid()" class="button">Go</a>
+            <a href="#" onclick="populateGrid()" class="button-small">Go</a>
         </div>
         <div class="content-container">
 
             <div id="myGrid" style="height: 400px; width: 100%" class="ag-theme-alpine container-spacer"></div>
+
+        </div>
+
+        <div class="content-container">
+            <div>
+                <div id="sourceitems">
+                    Source
+                </div>
+                <div id="destinationitems">
+                    Destination
+                </div>
+            </div>
+
 
         </div>
     </div>
