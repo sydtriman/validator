@@ -1,6 +1,7 @@
 const drop_dom_element = document.getElementById('drop_dom_element');
 const boxes = document.querySelectorAll('.drop_dom_element');
 const sheetlist = document.getElementById('sheetlist');
+const mappingArea = document.getElementById('mappingArea');
 const sourceitems = document.getElementById('sourceitems');
 const destinationitems = document.getElementById('destinationitems');
 const savedRowData = JSON.parse(localStorage.getItem('rowData')) || [];
@@ -102,7 +103,7 @@ function populateGrid() {
 
   worksheetData[0].forEach(function (cellContent) {
     let colDef = {};
-    console.log(cellContent["w"]);
+    //console.log(cellContent["w"]);
     headers.push(cellContent["w"]);
     colDef.field = cellContent['w'];
     columnDefs.push(colDef);
@@ -111,7 +112,7 @@ function populateGrid() {
   for (let i = 1; i < worksheetData.length; i++) {
     gridCell.id = rowIndex.toString();
     worksheetData[i].forEach(function (cellContent, index) {
-      console.log(cellContent);
+      //console.log(cellContent);
       gridCell[headers[index]] = cellContent['w'];
     });
     rowData.push(gridCell);
@@ -127,46 +128,66 @@ function populateGrid() {
 }
 
 function populateDestionation(savedColDefs) {
-  htmlString = "";
+  htmlString = "<h3>Required Fields</h3>";
+  destinationitems.innerHTML = htmlString;
   savedColDefs.forEach(function (col) {
-    htmlString += "<div class=\"flex-container\"><div class=\"destinationitem\">" + col + "</div><div class=\"targetblock\">...</div></div>"
+    htmlString += "<div class=\"flex-container\"><div class=\"destinationitem\">" + col + "</div><div data-area=\"target\" class=\"targetblock\">...</div></div>"
   });
   destinationitems.innerHTML = htmlString;
 }
 
 function populateSource(columnDefs) {
-  htmlString = "";
+  htmlString = "<div class=\"targetblock\">";
+  sourceitems.innerHTML = htmlString;
   columnDefs.forEach(function (col) {
-    htmlString += "<div draggable=\"true\" id=\"" + col.field + "\" class=\"sourceitem\">" + col.field + "</div>"
-  })
+    htmlString += "<div draggable=\"true\" id=\"" + col.field + "\" data-state=\"source\" class=\"sourceitem\">" + col.field + "</div>"
+  });
+  htmlString += "</div>"
   sourceitems.innerHTML = htmlString;
 }
 
-function colDrop(e) {
-  e.stopPropagation();
-  e.preventDefault();
-  e.target.drop_dom_element.classList.remove('drag-drop-hover');
-  let item = e.dataTransfer.getData("text");
-  e.target.appendChild(document.getElementById(item));
-}
-function colDrag(e) {
-  e.dataTransfer.setData("text", e.target.id);
-  console.log('colDrag event', e.target.id);
+function colDragStart(e) {
+  console.log('colDragStart event', "id=", e.target.id);
+  e.target.classList.add('drag-drop-highlight');
+  e.dataTransfer.setData("text/plain", e.target.id);
 }
 function colDragOver(e) {
+  console.log('colDragOver event');
   e.preventDefault();
   e.target.classList.add('drag-drop-hover');
-  console.log('colDragOver event');
 }
 function colDragEnter(e) {
+  console.log('colDragEnter event');
   e.preventDefault();
   e.target.classList.add('drag-drop-hover');
-  console.log('colDragEnter');
 }
 function colDragLeave(e) {
+  console.log('colDragLeave event');
   e.preventDefault();
   e.target.classList.remove('drag-drop-hover');
 }
+
+function colDrop(e) {
+  console.log('colDrop event');
+
+  e.preventDefault();
+  e.target.classList.remove('drag-drop-hover');
+
+  const draggedItem = e.dataTransfer;
+  const draggedItemID = draggedItem.getData("text/plain");
+  const draggedElement = document.getElementById(draggedItemID);
+  draggedElement.classList.remove('drag-drop-highlight');
+  e.target.appendChild(draggedElement);
+  if (e.target.getAttribute('data-area') == 'target') {
+    draggedElement.setAttribute('data-state', 'target');
+  } else {
+    draggedElement.setAttribute('data-state', 'source');
+  }
+
+
+}
+
+
 
 // -------------- EVENT LISTENERS --------------------------
 document.addEventListener('DOMContentLoaded', () => {
@@ -181,44 +202,29 @@ boxes.forEach(box => {
   box.addEventListener('drop', fileDrop);
 });
 
-sourceitems.addEventListener('dragstart', function (e) {
+mappingArea.addEventListener('dragstart', function (e) {
   if (e.target.classList.contains('sourceitem')) {
-    colDrag(e);
+    colDragStart(e);
   };
 });
-sourceitems.addEventListener('dragenter', function (e) {
-  if (e.target.classList.contains('sourceitem')) {
-    colDragEnter(e);
-  };
-});
-sourceitems.addEventListener('dragover', function (e) {
-  if (e.target.classList.contains('sourceitem')) {
+mappingArea.addEventListener('dragover', function (e) {
+  if (e.target.classList.contains('targetblock')) {
     colDragOver(e);
   };
 });
-sourceitems.addEventListener('dragleave', function (e) {
-  if (e.target.classList.contains('sourceitem')) {
+mappingArea.addEventListener('dragleave', function (e) {
+  if (e.target.classList.contains('targetblock')) {
     colDragLeave(e);
-  };
-});
-sourceitems.addEventListener('drop', function (e) {
-  if (e.target.classList.contains('sourceitem')) {
-    colDrop(e);
   };
 });
 
-destinationitems.addEventListener('dragenter', function (e) {
-  if (e.target.classList.contains('destinationitem')) {
+mappingArea.addEventListener('dragenter', function (e) {
+  if (e.target.classList.contains('targetblock')) {
     colDragEnter(e);
   };
-})
-destinationitems.addEventListener('dragover', function (e) {
-  if (e.target.classList.contains('destinationitem')) {
-    colDragOver(e);
-  };
 });
-destinationitems.addEventListener('dragleave', function (e) {
-  if (e.target.classList.contains('destinationitem')) {
-    colDragLeave(e);
+mappingArea.addEventListener('drop', function (e) {
+  if (e.target.classList.contains('targetblock')) {
+    colDrop(e);
   };
 });

@@ -30,33 +30,46 @@
         </div>
 
         <div class="content-container">
-            <div draggable="true" class="drop_dom_element tertiary-bg">Drop files here</div>
-            <form>
-                <select id="sheetlist" name="sheetlist">
 
+            <div class="flex-container flex-row">
+                <div id="file-drop">
+                    <h3 class="accent">Step 1: select file</h3>
+                    <div draggable="true" class="drop_dom_element text-center tertiary-bg">Drop files here</div>
+                    <form id="sheetlistform">
+                        <h3 class="accent">Step 2: select sheet</h3>
+                        <select id="sheetlist" name="sheetlist" class="select-css">
+                        </select>
+                    </form>
+                    <a href="#" id="sheetlistbtn" onclick="populateGrid()" class="button-small text-center">Go</a>
 
-                </select>
-            </form>
-            <a href="#" onclick="populateGrid()" class="button-small">Go</a>
-        </div>
-        <div class="content-container">
-
-            <div id="myGrid" style="height: 400px; width: 100%" class="ag-theme-alpine container-spacer"></div>
-
-        </div>
-
-        <div class="content-container">
-            <div>
-                <div id="sourceitems">
-                    Source
                 </div>
-                <div id="destinationitems">
-                    Destination
+
+                <div id="file-preview">
+                    <h3 class="accent">File preview</h3>
+                    <div id="myGrid" style="height: 400px; width: 100%" class="ag-theme-alpine container-spacer"></div>
                 </div>
             </div>
 
+        </div>
+
+
+
+
+
+
+
+        <div id="mappingArea" style="position: relative;">
+            <div id="sourceitems" data-area="source">
+                <h3>Source Fields</h3>
+
+            </div>
+            <div id="destinationitems">
+                <h3>Required Fields</h3>
+            </div>
 
         </div>
+
+
     </div>
 
     <script src="js/app.js"></script>
