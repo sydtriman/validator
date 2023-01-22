@@ -21,24 +21,28 @@ form {
   height: 1.2rem;
 }
 
-#sourceitems {
+#mappingarea {
   min-height: 200px;
+}
+
+#sourceitems {
+  min-height: 300px;
   border: 1px solid var(--accent);
   position: absolute;
   left: 0;
   top: 0;
-  width: 48%;
+  width: 25%;
   background-color: var(--accenttext);
   padding: 0 20px 20px 20px;
 }
 
 #destinationitems {
-  min-height: 200px;
+  min-height: 300px;
   border: 1px solid var(--accent);
   position: absolute;
   right: 0;
   top: 0;
-  width: 48%;
+  width: 70%;
   background-color: var(--accenttext);
   padding: 0 20px 20px 20px;
 }
@@ -47,6 +51,7 @@ form {
   padding: 0.5rem;
   border: 1px solid var(--accent);
   margin: 0.5rem;
+
 }
 
 .destinationitem {
@@ -65,11 +70,12 @@ form {
 }
 
 .drag-drop-hover {
-  background-color: greenyellow;
+  background-color: var(--accent);
 }
 
 .drag-drop-highlight {
-  background-color: red;
+  background-color: var(--accent);
+  color: var(--accenttext);
 }
 
 #file-drop {
@@ -84,25 +90,19 @@ form {
 
 }
 
-#sheetlistbtn {
-  position: absolute;
-  right: 0;
-  min-width: 30px;
-}
+
 
 /* class applies to select element itself, not a wrapper element */
 .select-css {
   display: block;
-  position: absolute;
-  left: 0;
   font-size: 16px;
   font-family: sans-serif;
   font-weight: 700;
   color: #444;
   line-height: 1.3;
   padding: .6em 1.4em .5em .8em;
-  width: 90%;
-  max-width: 90%;
+  width: 100%;
+  max-width: 100%;
   /* useful when width is set to anything other than 100% */
   box-sizing: border-box;
   margin: 20px 0 0 0;

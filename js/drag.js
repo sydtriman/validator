@@ -6,6 +6,7 @@ const sourceitems = document.getElementById('sourceitems');
 const destinationitems = document.getElementById('destinationitems');
 const savedRowData = JSON.parse(localStorage.getItem('rowData')) || [];
 const savedColDefs = JSON.parse(localStorage.getItem('colDefs')) || [];
+const errormsg = document.getElementById('errormsg');
 
 let columnDefs = [];
 let immutableStore = [];
@@ -44,6 +45,7 @@ const gridOptions = {
   }
 };
 
+// -------------- FILE DRAG DROP  --------------------------
 async function fileDrop(e) {
   e.stopPropagation();
   e.preventDefault();
@@ -75,12 +77,16 @@ function fileDragLeave(e) {
   let drop_dom_element = e.target;
   drop_dom_element.classList.remove('drop-dom-element-hover');
 }
+
+// -------------- GIRD  --------------------------
 function populateSheetDropDown(workbook) {
-  let html = "";
+  let html = "<option value=\"\"></option>";
   for (sheet of workbook.SheetNames) {
     html += `<option value="${sheet}">${sheet}</option>`;
   };
   sheetlist.innerHTML = html;
+  sheetlist.value = workbook.SheetNames[0];
+  populateGrid()
 }
 
 function populateGrid() {
@@ -93,59 +99,66 @@ function populateGrid() {
   let rowIndex = 1;
   let gridCell = {};
 
-
-  // iterate over the worksheet pulling out the columns we're expecting
-  //while (worksheet['A' + rowIndex]) {
-  // let row = {};
-  // Object.keys(columns).forEach(function (column) {
-  //  row[columns[column]] = worksheet[column + rowIndex].w;
-  // });
-
-  worksheetData[0].forEach(function (cellContent) {
-    let colDef = {};
-    //console.log(cellContent["w"]);
-    headers.push(cellContent["w"]);
-    colDef.field = cellContent['w'];
-    columnDefs.push(colDef);
-  });
-
-  for (let i = 1; i < worksheetData.length; i++) {
-    gridCell.id = rowIndex.toString();
-    worksheetData[i].forEach(function (cellContent, index) {
-      //console.log(cellContent);
-      gridCell[headers[index]] = cellContent['w'];
+  try {
+    worksheetData[0].forEach(function (cellContent) {
+      let colDef = {};
+      //console.log(cellContent["w"]);
+      headers.push(cellContent["w"]);
+      colDef.field = cellContent['w'];
+      columnDefs.push(colDef);
     });
-    rowData.push(gridCell);
-    rowIndex++;
-    gridCell = {};
-  }
-  immutableStore = rowData;
-  gridOptions.api.setColumnDefs(columnDefs);
-  gridOptions.api.setRowData(immutableStore);
 
-  populateSource(columnDefs);
-  populateDestionation(savedColDefs)
+    for (let i = 1; i < worksheetData.length; i++) {
+      gridCell.id = rowIndex.toString();
+      worksheetData[i].forEach(function (cellContent, index) {
+        //console.log(cellContent);
+        gridCell[headers[index]] = cellContent['w'];
+      });
+      rowData.push(gridCell);
+      rowIndex++;
+      gridCell = {};
+    }
+    immutableStore = rowData;
+    gridOptions.api.setColumnDefs(columnDefs);
+    gridOptions.api.setRowData(immutableStore);
+
+    populateSource(columnDefs);
+    populateDestionation(savedColDefs);
+    errormsg.innerHTML = "";
+  }
+  catch (err) {
+    console.log('Worksheet ERROR', err);
+    columnDefs = [];
+    immutableStore = [];
+    rowData = [];
+
+    gridOptions.api.setColumnDefs(columnDefs);
+    gridOptions.api.setRowData(immutableStore);
+    errormsg.innerHTML = "The select worksheet does not contain valid data"
+  }
+
 }
 
 function populateDestionation(savedColDefs) {
   htmlString = "<h3>Required Fields</h3>";
   destinationitems.innerHTML = htmlString;
   savedColDefs.forEach(function (col) {
-    htmlString += "<div class=\"flex-container\"><div class=\"destinationitem\">" + col + "</div><div data-area=\"target\" class=\"targetblock\">...</div></div>"
+    htmlString += "<div class=\"flex-container\"><div class=\"destinationitem\">" + col + "</div><div data-area=\"target\" class=\"targetblock\"></div></div>"
   });
   destinationitems.innerHTML = htmlString;
 }
 
 function populateSource(columnDefs) {
-  htmlString = "<div class=\"targetblock\">";
+  htmlString = "<h3>Source Fields</h3>";
   sourceitems.innerHTML = htmlString;
   columnDefs.forEach(function (col) {
     htmlString += "<div draggable=\"true\" id=\"" + col.field + "\" data-state=\"source\" class=\"sourceitem\">" + col.field + "</div>"
   });
-  htmlString += "</div>"
+
   sourceitems.innerHTML = htmlString;
 }
 
+// -------------- FIELD DRAG DROP  --------------------------
 function colDragStart(e) {
   console.log('colDragStart event', "id=", e.target.id);
   e.target.classList.add('drag-drop-highlight');
@@ -166,7 +179,6 @@ function colDragLeave(e) {
   e.preventDefault();
   e.target.classList.remove('drag-drop-hover');
 }
-
 function colDrop(e) {
   console.log('colDrop event');
 
@@ -186,7 +198,11 @@ function colDrop(e) {
 
 
 }
+function colDragEnd(e) {
+  console.log('colDragEnd event', "id=", e.target.id);
+  e.target.classList.remove('drag-drop-highlight');
 
+}
 
 
 // -------------- EVENT LISTENERS --------------------------
@@ -217,7 +233,6 @@ mappingArea.addEventListener('dragleave', function (e) {
     colDragLeave(e);
   };
 });
-
 mappingArea.addEventListener('dragenter', function (e) {
   if (e.target.classList.contains('targetblock')) {
     colDragEnter(e);
@@ -228,3 +243,9 @@ mappingArea.addEventListener('drop', function (e) {
     colDrop(e);
   };
 });
+mappingArea.addEventListener('dragend', function (e) {
+  if (e.target.classList.contains('sourceitem')) {
+    colDragEnd(e);
+  };
+});
+sheetlist.addEventListener('change', populateGrid)
