@@ -7,6 +7,7 @@ const destinationitems = document.getElementById('destinationitems');
 const savedRowData = JSON.parse(localStorage.getItem('rowData')) || [];
 const savedColDefs = JSON.parse(localStorage.getItem('colDefs')) || [];
 const errormsg = document.getElementById('errormsg');
+const navbar = document.getElementById('navbar');
 
 let columnDefs = [];
 let immutableStore = [];
@@ -204,11 +205,19 @@ function colDragEnd(e) {
 
 }
 
+function updateNavBar() {
+  const pageName = window.location.href;
+  const links = navbar.getElementsByTagName('a');
+
+
+
+}
 
 // -------------- EVENT LISTENERS --------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const gridDiv = document.querySelector('#myGrid');
   new agGrid.Grid(gridDiv, gridOptions);
+  updateNavBar()
 });
 
 boxes.forEach(box => {
