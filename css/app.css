@@ -1,266 +1,173 @@
-:root {
-  background-color: #ecf5ff;
-  font-size: 62.5%;
-  --theme-color: rgba(0, 56, 101, 1);
-  --theme-color-alt: rgba(0, 175, 102, 1);
-  --theme-color-alt-30: rgba(0, 175, 102, 0.3);
-  --theme-color-alt-50: rgba(0, 175, 102, 0.5);
-  --theme-color-50: rgba(0, 56, 101, 0.5);
-  --theme-color-30: rgba(0, 56, 101, 0.3);
+.ag-body-viewport-wrapper.ag-layout-normal {
+  overflow-x: scroll;
+  overflow-y: scroll;
 }
 
-* {
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  padding: 0;
-  color: #333;
+.drop_dom_element {
+  height: 100px;
+
+  padding: 20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
-p {
-  font-size: 1.6rem;
+.drop-dom-element-hover {
+  background-color: pink;
+  border: red 1px dashed
 }
 
-a {
-  text-decoration: none;
-  border-bottom: 1px solid var(--theme-color-alt-50);
+form {
+  display: inline;
+  height: 1.2rem;
 }
 
-a:hover {
-  border-bottom: 1px solid var(--theme-color-alt-30);
-  background-color: var(--theme-color-alt-30);
+#mappingarea {
+  min-height: 200px;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  margin-bottom: 1rem;
+#sourceitems {
+  min-height: 300px;
+  border: 1px solid var(--accent);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 25%;
+  background-color: var(--accenttext);
+  padding: 0 20px 20px 20px;
 }
 
-h1 {
-  font-size: 5.4rem;
-  color: var(--theme-color);
-  margin-bottom: 5rem;
+#destinationitems {
+  min-height: 300px;
+  border: 1px solid var(--accent);
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 70%;
+  background-color: var(--accenttext);
+  padding: 0 20px 20px 20px;
 }
 
-h1 > span {
-  font-size: 2.4rem;
-  font-weight: 500;
+.sourceitem {
+  padding: 0.5rem;
+  border: 1px solid var(--accent);
+  margin: 0.5rem;
+
 }
 
-h2 {
-  font-size: 4.2rem;
-  margin-bottom: 4rem;
+.destinationitem {
+  padding: 0.5rem;
+  border: 1px solid var(--accent);
+  margin: 0.5rem;
+  width: 50%;
+
+}
+
+.targetblock {
+  padding: 0.5rem;
+  width: 50%;
+  border: 1px solid var(--accent);
+  margin: 0.5rem;
+}
+
+.drag-drop-hover {
+  background-color: var(--accent);
+}
+
+.drag-drop-highlight {
+  background-color: var(--accent);
+  color: var(--accenttext);
+}
+
+#file-drop {
+  width: 30%;
+  padding-right: 20px;
+  position: relative;
+}
+
+#file-preview {
+  width: 70%;
+  padding-left: 20px;
+
+}
+
+
+
+/* class applies to select element itself, not a wrapper element */
+.select-css {
+  display: block;
+  font-size: 16px;
+  font-family: sans-serif;
   font-weight: 700;
-}
-
-h3 {
-  font-size: 2.8rem;
-  font-weight: 500;
-}
-
-.container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  max-width: 80rem;
-  margin: 0 auto;
-}
-
-.container > * {
+  color: #444;
+  line-height: 1.3;
+  padding: .6em 1.4em .5em .8em;
   width: 100%;
-  padding: 0 2rem 0 2rem;
+  max-width: 100%;
+  /* useful when width is set to anything other than 100% */
+  box-sizing: border-box;
+  margin: 20px 0 0 0;
+  border: 1px solid #aaa;
+  box-shadow: 0 1px 0 1px rgba(0, 0, 0, .04);
+  border-radius: .5em;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  /* note: bg image below uses 2 urls. The first is an svg data uri for the arrow icon, and the second is the gradient. 
+    for the icon, if you want to change the color, be sure to use `%23` instead of `#`, since it's a url. You can also swap in a different svg icon or an external image reference
+    
+  */
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+    linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+  background-repeat: no-repeat, repeat;
+  /* arrow icon position (1em from the right, 50% vertical) , then gradient position*/
+  background-position: right .7em top 50%, 0 0;
+  /* icon size, then gradient */
+  background-size: .65em auto, 100%;
 }
 
-.flex-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.flex-center {
-  justify-content: center;
-  align-items: center;
-}
-
-.justify-center {
-  justify-content: center;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.hidden {
+/* Hide arrow icon in IE browsers */
+.select-css::-ms-expand {
   display: none;
 }
 
-.btn {
-  font-size: 1.8rem;
-  padding: 1rem 0;
-  width: 20rem;
-  text-align: center;
-  border: 0.1rem solid var(--theme-color);
-  margin-bottom: 1rem;
-  margin-top: 1rem;
-  text-decoration: none;
-  color: var(--theme-color);
-  background-color: white;
-  border-radius: 0.5rem;
+/* Hover style */
+.select-css:hover {
+  border-color: #888;
 }
 
-.btn:hover {
-  cursor: pointer;
-  box-shadow: 0 0.4rem 1.4rem 0 var(--theme-color-50);
-  transform: translateY(-0.1rem);
-  transition: transform 150ms;
-}
-
-.btn[disabled]:hover {
-  cursor: non-allowed;
-  box-shadow: none;
-  transform: none;
-}
-
-#userform {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#username {
-  margin-bottom: 1rem;
-  width: 20rem;
-  padding: 1.5rem;
-  font-size: 1.8rem;
-  border: none;
-  text-align: center;
-  box-shadow: 0 0.1rem 1.4rem 0 var(--theme-color-50);
-}
-
-#username::placeholder {
-  color: #aaa;
-}
-
-#difficultyForm {
-  position: relative;
-  border-radius: 3px;
-  padding: 0.4rem;
-  margin-bottom: 1rem;
-  box-shadow: inset 0 0 0 3px rbga(35, 33, 45, 0.3),
-    0 0 0 3px rgba(185, 185, 185, 0.3);
-}
-
-#difficultyForm input {
-  height: 100%;
-  width: auto;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
+/* Focus style */
+.select-css:focus {
+  border-color: #aaa;
+  /* It'd be nice to use -webkit-focus-ring-color here but it doesn't work on box-shadow */
+  box-shadow: 0 0 1px 3px rgba(59, 153, 252, .7);
+  box-shadow: 0 0 0 3px -moz-mac-focusring;
+  color: #222;
   outline: none;
-  cursor: pointer;
-  border-radius: 2px;
-  padding: 4px 8px;
-  background-color: var(--theme-color);
-  color: white;
-  font-size: 1.4rem;
-  transition: all 100ms linear;
 }
 
-.difficulty:hover {
-  cursor: pointer;
+/* Set options to normal weight */
+.select-css option {
+  font-weight: normal;
 }
 
-#difficultyForm input:checked {
-  background-color: #28a745;
-  color: #fff;
-  box-shadow: 0 1px 1px #0000002e;
-  text-shadow: 0 1px 0px #79485f7a;
+/* Support for rtl text, explicit support for Arabic and Hebrew */
+*[dir="rtl"] .select-css,
+:root:lang(ar) .select-css,
+:root:lang(iw) .select-css {
+  background-position: left .7em top 50%, 0 0;
+  padding: .6em .8em .5em 1.4em;
 }
 
-#difficultyForm input:before {
-  content: attr(label);
-  display: inline-block;
-  text-align: center;
-  width: 100%;
+/* Disabled styles */
+.select-css:disabled,
+.select-css[aria-disabled=true] {
+  color: graytext;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22graytext%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E'),
+    linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
 }
 
-ul {
-  margin-bottom: 2rem;
-  list-style: none;
-}
-
-li {
-  font-size: 1.8rem;
-  color: #333;
-}
-
-#questionText {
-  display: inline-block;
-  font-size: 1.6rem;
-  background-color: var(--theme-color);
-  color: white;
-  line-height: 3.3rem;
-  padding-left: 0.8rem;
-  padding-right: 0.8rem;
-  width: 3.3rem;
-  height: 3.3rem;
-  text-align: center;
-  border-radius: 50%;
-  border: 1px solid white;
-  left: -2px;
-  position: relative;
-}
-
-#questionRequest {
-  margin-bottom: 1.2rem;
-}
-
-#questionRange {
-  -webkit-appearance: none;
-  appearance: none;
-  height: 1rem;
-  background: #d3d3d3;
-  border-radius: 2rem 0rem 0rem 2rem;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: 0.2s;
-  transition: opacity 0.2s;
-}
-
-#questionRange:hover {
-  opacity: 1;
-}
-
-#questionRange::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  border-radius: 50%;
-  width: 2rem;
-  height: 2rem;
-  background: var(--theme-color-alt);
-  cursor: pointer;
-}
-
-#settingsBox {
-  border: 1px solid var(--theme-color-alt);
-  padding: 1.2rem;
-  margin: 1.2rem;
-  border-radius: 1rem;
-}
-
-#settingsBoxText {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 0.8rem;
-  color: var(--theme-color-alt);
+.select-css:disabled:hover,
+.select-css[aria-disabled=true] {
+  border-color: #aaa;
 }

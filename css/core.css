@@ -378,8 +378,3 @@ a[data-disabled="true"] {
 .tab-open {
     display: block;
 }
-
-.ag-body-viewport-wrapper.ag-layout-normal {
-    overflow-x: scroll;
-    overflow-y: scroll;
-}
