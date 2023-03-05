@@ -1,16 +1,17 @@
 let immutableStore = [];
 const output = document.getElementById('output');
-const saveBtn = document.getElementById('saveBtn');
+const setnametitle = document.getElementById('setname');
+const setlist = document.getElementById('setlist');
+const gridmessage = document.getElementById('gridmessage');
+
 let colNames = [];
+let setObject = [];
 
 class ActionCellRenderer {
     init(params) {
         this.eGui = document.createElement('span');
         let actionButtons = ""
         actionButtons += `<a href="#" onclick="deleteRow(${params.data.id})" id="delete_${params.data.id}" class="button-small">Delete</a>`;
-        actionButtons += `&nbsp;<a href="#" onclick="editRow(${params.data.id})" id="edit_${params.data.id}" class="button-small">Edit</a>`;
-        actionButtons += `&nbsp;<a href="#" onclick="saveRow(${params.data.id})" id="save_${params.data.id}" class="button-small hidden">Save</a>`;
-
         this.eGui.innerHTML = actionButtons;
     }
 
@@ -23,41 +24,34 @@ class ActionCellRenderer {
     }
 }
 
-const columnDefs = [
-    {
-        field: "state",
-        editable: true,
-        hide: true
-    },
+let columnDefs = [
     {
         field: "action",
         cellRenderer: ActionCellRenderer,
         editable: false,
         filter: false,
-        minWidth: 150,
+        width: 100,
         resizable: false,
         sortable: false,
     },
     {
-        field: "name", editable: true,
+        field: "name",
         headerName: "Column Name",
         resizable: true,
-        flex: 2,
-        editable: (params) => params.data.state == "edit"
+        flex: 2
     },
     {
         field: "description",
         headerName: "Field Description",
         resizable: true,
-        flex: 2,
-        editable: (params) => params.data.state == "edit"
+        flex: 2
     },
     {
         field: "type",
         headerName: "Data Type",
-        cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: ['Text', 'Number', 'Boolean'] },
-        editable: (params) => params.data.state == "edit"
+        cellEditor: DropDownEditor,
+        cellEditorParams: dropDownValues,
+
     },
     {
         field: "special_characters",
@@ -65,8 +59,7 @@ const columnDefs = [
         width: 150,
         resizable: false,
         cellEditor: 'agSelectCellEditor',
-        cellEditorParams: { values: ['Yes', 'No'] },
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit"
+        cellEditorParams: dropDownValues
     },
     {
         field: "min_length",
@@ -74,7 +67,7 @@ const columnDefs = [
         width: 150,
         resizable: false,
         filter: 'agNumberColumnFilter',
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
+        cellEditor: NumberCellEditor
     },
     {
         field: "max_length",
@@ -82,8 +75,7 @@ const columnDefs = [
         width: 150,
         resizable: false,
         filter: 'agNumberColumnFilter',
-        editable: (params) => params.data.type == "Text" & params.data.state == "edit",
-        valueParser: numberParser,
+        cellEditor: NumberCellEditor
     },
     {
         field: "decimals",
@@ -91,8 +83,7 @@ const columnDefs = [
         width: 150,
         filter: 'agNumberColumnFilter',
         resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
-        valueParser: numberParser,
+        cellEditor: NumberCellEditor
 
     },
     {
@@ -101,8 +92,7 @@ const columnDefs = [
         filter: 'agNumberColumnFilter',
         width: 150,
         resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit",
-        valueParser: numberParser,
+        cellEditor: NumberCellEditor
     },
     {
         field: "max_value",
@@ -110,14 +100,14 @@ const columnDefs = [
         width: 150,
         filter: 'agNumberColumnFilter',
         resizable: false,
-        editable: (params) => params.data.type == "Number" & params.data.state == "edit"
+        cellEditor: NumberCellEditor
 
     }
 ];
 
 let rowData = [
-    { id: "1", state: "read", name: "account_description", description: "Account Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
-    { id: "2", state: "read", name: "account_description2", description: "Account II Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
+    { id: "1", name: "account_description", description: "Account Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
+    { id: "2", name: "account_description2", description: "Account II Description", type: "Text", special_characters: "Yes", min_length: "1", max_length: "100" },
 ];
 
 const gridOptions = {
@@ -126,15 +116,21 @@ const gridOptions = {
     rowSelection: 'single',
     editType: 'fullRow',
     suppressMovableColumns: true,
+    singleClickEdit: true,
     animateRows: true,
+    stopEditingWhenCellsLoseFocus: true,
 
     //isRowSelectable: rowNode => rowNode.data ? rowNode.data.state == "edit" : false,
     getRowId: (params) => params.data.id,
     //onSelectionChanged: event => console.log("ONSELECTIONCHANGED", event),
     //onRowSelected: event => console.log("ONROWSELECTED", event),
     //onRowClicked: event => console.log('ONROWCLICKED', event),
-    //onCellValueChanged: event => console.log('ONCELLVALUECHANGED', event),
+    //onRowValueChanged: event => console.log('ONROWVALUECHANGED', event),
+    // onCellEditRequest: event => console.log('ONCELLEDITREQUEST', event),
     //onCellEditingStarted: event => console.log('ONCELLEDITINGSTART', event),
+    //onCellEditingStopped: event => console.log('ONCELLEDITINGSTOPPED', event),
+    //onCellValueChanged: event => console.log('ONCELLVALUECHANGED', event),
+    //onCellValueChanged: onCellValueChanged,
     onCellEditingStopped: onCellEditingStopped,
     onGridReady: (params) => {
         immutableStore = [];
@@ -142,6 +138,7 @@ const gridOptions = {
         immutableStore = rowData;
         params.api.setRowData(immutableStore);
         gridOptions.api.sizeColumnsToFit();
+
 
     },
     defaultColDef: {
@@ -169,27 +166,6 @@ function deleteRow(id) {
     }
 }
 
-function saveRow(id) {
-    let selectedRowNode = gridOptions.api.getRowNode(id);
-    let selectedRowIndex = selectedRowNode.rowIndex;
-
-    const editBtn = document.getElementById('edit_' + id);
-    editBtn.classList.remove('hidden');
-    const runBtn = document.getElementById('runBtn');
-    runBtn.classList.remove('hidden');
-    const saveBtn = document.getElementById('save_' + id);
-    saveBtn.classList.add('hidden');
-    const addBtn = document.getElementById('addBtn');
-    addBtn.setAttribute('data-disabled', 'false');
-
-
-    gridOptions.api.stopEditing();
-
-    selectedRowNode.setDataValue('state', "read");
-    selectedRowNode.setSelected(false);
-
-}
-
 function runRow() {
     output.innerHTML = "";
     html = "";
@@ -207,7 +183,7 @@ function addRow() {
     const newStore = immutableStore.slice();
     const lastID = immutableStore.length;
     const nextID = (lastID + 1).toString();
-    const newRowData = { id: nextID, state: "edit", action: "", name: "new" };
+    const newRowData = { id: nextID, state: "edit", action: "", name: "new", type: "Text" };
 
     newStore.splice(0, 0, newRowData);
     immutableStore = newStore;
@@ -218,73 +194,82 @@ function addRow() {
 
 }
 
-function editRow(id) {
-    let selectedRowNode = gridOptions.api.getRowNode(id);
-    let selectedRowIndex = selectedRowNode.rowIndex;
-
-    selectedRowNode.setDataValue('state', "edit");
-
-    gridOptions.api.startEditingCell({
-        rowIndex: selectedRowIndex,
-        colKey: 'name',
-    });
-
-    const addBtn = document.getElementById('addBtn');
-    addBtn.setAttribute('data-disabled', 'true');
-    const editBtn = document.getElementById('edit_' + id);
-    editBtn.classList.add('hidden');
-    const saveBtn = document.getElementById('save_' + id);
-    saveBtn.classList.remove('hidden');
-    const runBtn = document.getElementById('runBtn');
-    runBtn.classList.add('hidden');
-
-
-}
-
 function onCellEditingStopped(event) {
-    //console.log('ONCELLEDITINGSTOPPED', event);
+    console.log('ONCELLEDITINGSTOPPED', event);
     var rowNode = event.node;
-    if (event.newValue == "Number") {
-        rowNode.setDataValue('min_length', "");
-        rowNode.setDataValue('max_length', "");
-        rowNode.setDataValue('decimals', "2");
-        rowNode.setDataValue('min_value', "0");
-        rowNode.setDataValue('max_value', "");
-        rowNode.setDataValue('special_characters', "");
+    // if (event.newValue == "Number") {
+    //     rowNode.setDataValue('min_length', "");
+    //     rowNode.setDataValue('max_length', "");
+    //     rowNode.setDataValue('decimals', "2");
+    //     rowNode.setDataValue('min_value', "0");
+    //     rowNode.setDataValue('max_value', "");
+    //     rowNode.setDataValue('special_characters', "");
 
-    } else if ((event.newValue == "Text")) {
-        rowNode.setDataValue('min_length', "1");
-        rowNode.setDataValue('max_length', "");
-        rowNode.setDataValue('decimals', "");
-        rowNode.setDataValue('min_value', "");
-        rowNode.setDataValue('max_value', "");
-        rowNode.setDataValue('special_characters', "Yes");
-    };
-    rowNode.setSelected(false);
+    // } else if ((event.newValue == "Text")) {
+    //     rowNode.setDataValue('min_length', "1");
+    //     rowNode.setDataValue('max_length', "");
+    //     rowNode.setDataValue('decimals', "");
+    //     rowNode.setDataValue('min_value', "");
+    //     rowNode.setDataValue('max_value', "");
+    //     rowNode.setDataValue('special_characters', "Yes");
+    // };
+
 }
 
-function numberParser(params) {
-    return Number(params.newValue);
-}
 
 function saveSet(e) {
-
     e.preventDefault();
-    localStorage.setItem('rowData', JSON.stringify(rowData));
+    let setProperties = {};
+    let setName = prompt("Please enter a name for your set", "");
+    const d = new Date();
+    let lastsavedon = d.toLocaleDateString() + " at  " + d.toLocaleTimeString();
 
-    rowData.forEach(function (row) {
-        colNames.push(row.name)
-    })
-
-    localStorage.setItem('colDefs', JSON.stringify(colNames))
-    window.location.assign('/');
+    if (setName != null) {
+        setProperties.setName = setName;
+        setProperties.setID = performance.now().toString() + Math.random().toString();
+        setProperties.lastsavedon = lastsavedon;
+        setProperties.rowData = immutableStore;
+        setProperties.columnDefs = columnDefs;
+        immutableStore.forEach(function (row) {
+            colNames.push(row.name)
+        })
+        setProperties.colNames = colNames;
+        setObject.push(setProperties);
+        localStorage.setItem('validator', JSON.stringify(setObject));
+        setnametitle.innerHTML = `<h3>${setName}</h3><p>Last saved on ${lastsavedon}`;
+        window.location.assign('/');
+    }
 
 }
 
+function populateSaveList() {
+    setObject = JSON.parse(localStorage.getItem("validator")) || [];
+    let setlisthtml = "";
+    for (item of setObject) {
+        setlisthtml += `<option name="${item.setID}" id="${item.setID}" value="${item.setName}">${item.setName}</option>`;
+    };
+    setlist.innerHTML = setlisthtml;
+}
 
+function loadGrid() {
+    selectedSetID = setlist[setlist.selectedIndex].id;
+
+    let index = setObject.findIndex(function (entry) {
+        return entry.setID === selectedSetID;
+    });
+
+    let selectedSet = setObject[index];
+
+    immutableStore = selectedSet.rowData;
+    gridOptions.api.setRowData(immutableStore);
+    //columnDefs = selectedSet.columnDefs;
+
+    //agGrid.Grid(gridDiv, gridOptions);
+}
 document.addEventListener('DOMContentLoaded', () => {
     const gridDiv = document.querySelector('#myGrid');
     new agGrid.Grid(gridDiv, gridOptions);
+    populateSaveList();
 });
 
 document.addEventListener('click', function (event) {
